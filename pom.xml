@@ -34,11 +34,17 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- Avoid "Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider" error on Apple Silicon -->
+		<!-- Avoid "Unable to load
+		io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider" error
+		on Apple Silicon -->
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
