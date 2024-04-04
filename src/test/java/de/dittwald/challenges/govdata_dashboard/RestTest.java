@@ -26,16 +26,16 @@ public class RestTest {
 		assertThat(app).isNotNull();
 	}
 
-	@Test
-	public void whenGetOk_thenOk() {
-		Response response = RestAssured.get(API_ROOT);
-		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-	}
+//	@Test
+//	public void whenGetOk_thenOk() {
+//		Response response = RestAssured.get(API_ROOT);
+//		assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+//	}
 
-	@Test
-	public void whenResponseHDS_thenOk() {
-		Response response = RestAssured.get(API_ROOT);
-		assertEquals(HELLO_DIGI, response.getBody().asString());
-	}
+//	@Test
+//	public void whenResponseHDS_thenOk() {
+//		Response response = RestAssured.get(API_ROOT);
+//		assertEquals(HELLO_DIGI, response.getBody().asString());
+//	}
 
 }

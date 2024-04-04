@@ -33,59 +33,59 @@ public class Application {
 
 	private WebClient client = WebClient.create("https://www.govdata.de/ckan/api/3/action/");
 
-	@GetMapping("/")
-	public String helloWorld() {
-		return "Hello DigitalService!";
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@GetMapping("count")
-	public String countDatasetsPerDepartment(@RequestParam(name = "name") String department) {
-
-		JsonNode rootNode;
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		try {
-			rootNode = objectMapper.readTree(this.client.get().uri("package_search?fq=organization:" + department)
-					.retrieve().bodyToMono(String.class).block());
-
-			return rootNode.get("result").get("count").asText();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return "Ooops and error happened";
-	}
-
-	@GetMapping("countAll")
-	public String datasetsCountPerMinistry() throws IOException {
+	@GetMapping("organizations")
+	public String ckanOrganizationsList() throws IOException {
 
 		JsonNode departmentsJson;
-		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode organizationsJson;
+		ObjectMapper departmentObjectMapper = new ObjectMapper();
+		ObjectMapper organizationObjectMapper = new ObjectMapper();
 		InputStream in = departments.getInputStream();
 		StringBuilder sb = new StringBuilder();
 
-		departmentsJson = objectMapper.readValue(in, JsonNode.class);
+		// Retreive all CKAN organizations including all fields and its dataset count
+		organizationsJson = organizationObjectMapper
+				.readTree(this.client.get().uri("organization_list?all_fields=true&include_dataset_count=true")
+						.retrieve().bodyToMono(String.class).block());
 
-		// Todo: Map department names to correct equivalents govdata ckan
+		// Map department.json to JsonNode
+		departmentsJson = departmentObjectMapper.readValue(in, JsonNode.class);
+
+		/**
+		 * Iterate over all departments and its subordinates of the departments.json and
+		 * find matching titles in the organizations list of CKAN.
+		 * 
+		 * If a match is found, the dataset count will be determined for this department
+		 * / organization.
+		 * 
+		 * Todo: Some departments of departments.json are not listed as organizations in
+		 * CKAN. Those are not considered in the current implementation.
+		 */
 		departmentsJson.get("departments").forEach(departmentJson -> {
 
 			String department = departmentJson.get("name").asText();
-			sb.append(department).append(": ").append(countDatasetsPerDepartment(department)).append("\n");
+
+			organizationsJson.get("result").forEach(organizationJson -> {
+				if (organizationJson.get("title").asText().equals(department)) {
+					sb.append(organizationJson.get("package_count")).append("\t").append(department).append("\n");
+				}
+			});
 
 			if (departmentJson.has("subordinates")) {
 				departmentJson.get("subordinates").forEach(subordinateJson -> {
 
 					String subordinate = subordinateJson.get("name").asText();
-					sb.append("\t").append(subordinate).append(": ").append(countDatasetsPerDepartment(subordinate))
-							.append("\n");
+					organizationsJson.get("result").forEach(organizationJson -> {
+						if (organizationJson.get("title").asText().equals(subordinate)) {
+							sb.append(" \\_").append(organizationJson.get("package_count")).append("\t")
+									.append(subordinate).append("\n");
+						}
+					});
+
 				});
 			}
 		});
