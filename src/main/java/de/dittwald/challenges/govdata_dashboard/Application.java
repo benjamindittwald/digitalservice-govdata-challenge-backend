@@ -4,8 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,14 +33,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Hello DigitalService!
  *
  */
+
 @SpringBootApplication
 @Controller
 public class Application {
 
+	Logger logger = LoggerFactory.getLogger(Application.class);
+
 	@Value("classpath:departments.json")
 	private Resource departments;
 
-	private WebClient client = WebClient.create("https://www.govdata.de/ckan/api/3/action/");
+	@Autowired
+	private Properties properties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -38,66 +53,96 @@ public class Application {
 	@GetMapping("/")
 	public String index(Model model) throws IOException {
 
-		List<Department> departments = ckanOrganizationsDatasetCountList();
-		Collections.sort(departments, Collections.reverseOrder());
+		Set<Department> departments = ckanOrganizationsDatasetCountList();
+		List<Department> federalMinistries = new ArrayList<Department>();
+
+		departments.forEach(department -> {
+			logger.info(department.getTitle() + ": " + department.getDatasetCount());
+			Department fm = new Department(department.getTitle(), department.getDatasetCount());
+
+			if (!department.getSubordinates().isEmpty()) {
+				department.getSubordinates().forEach(subordinate -> {
+					fm.setDatasetCount(fm.getDatasetCount() + subordinate.getDatasetCount());
+					logger.info("  \\_" + subordinate.getTitle() + ": " + subordinate.getDatasetCount());
+				});
+			}
+			federalMinistries.add(fm);
+		});
+
+		Collections.sort(federalMinistries);
+		Collections.reverse(federalMinistries);
+
 		model.addAttribute("departments", departments);
+		model.addAttribute("federalMinistries", federalMinistries);
 
 		return "index";
 	}
 
-	private List<Department> ckanOrganizationsDatasetCountList() throws IOException {
+	/**
+	 * Creates and returns a list that matches the departments of the
+	 * departments.json file with the corresponding organizations and their number
+	 * of published datasets of GovDatas CKAN.
+	 * 
+	 * @return A list of departments incl. their number of published datasets on
+	 *         GovData
+	 * @throws IOException
+	 */
+	private Set<Department> ckanOrganizationsDatasetCountList() throws IOException {
 		JsonNode departmentsJson;
 		JsonNode organizationsJson;
 		ObjectMapper departmentObjectMapper = new ObjectMapper();
 		ObjectMapper organizationObjectMapper = new ObjectMapper();
 		InputStream in = this.departments.getInputStream();
+		WebClient client = WebClient.create(properties.getGovdataApiBaseUrl());
 
-		List<Department> newDepartments = new ArrayList<Department>();
+		Set<Department> matchingDepartments = new HashSet<Department>();
 
-		// Retreive all CKAN organizations including all fields and its dataset count
-		organizationsJson = organizationObjectMapper
-				.readTree(this.client.get().uri("organization_list?all_fields=true&include_dataset_count=true")
-						.retrieve().bodyToMono(String.class).block());
+		// Retrieve all CKAN organizations including all fields and its dataset count
+		organizationsJson = organizationObjectMapper.readTree(client.get()
+				.uri(properties.getGovdataApiOrganizationsList()).retrieve().bodyToMono(String.class).block());
 
-		// Map department.json to JsonNode
 		departmentsJson = departmentObjectMapper.readValue(in, JsonNode.class);
 
 		/**
 		 * Iterate over all departments and its subordinates of the departments.json and
-		 * find matching titles in the organizations list of CKAN.
+		 * find matching titles in the organizations list of GovData.
 		 * 
 		 * If a match is found, the dataset count will be determined for this department
 		 * / organization.
 		 * 
 		 * Todo: Some departments of departments.json are not listed as organizations in
-		 * CKAN. Those are not considered in the current implementation.
+		 * GovData. Those are not considered in the current implementation.
 		 */
 		departmentsJson.get("departments").forEach(departmentJson -> {
 
-			String department = departmentJson.get("name").asText();
+			Department department = new Department();
+			department.setTitle(departmentJson.get("name").asText());
 
 			organizationsJson.get("result").forEach(organizationJson -> {
-				if (organizationJson.get("title").asText().equals(department)) {
-					newDepartments.add(new Department(department, organizationJson.get("package_count").asInt()));
+				if (StringUtils.equals(organizationJson.get("title").asText(), department.getTitle())) {
+					department.setDatasetCount(organizationJson.get("package_count").asInt());
 				}
 			});
 
 			if (departmentJson.has("subordinates")) {
 				departmentJson.get("subordinates").forEach(subordinateJson -> {
 
-					String subordinate = subordinateJson.get("name").asText();
+					Department subordinate = new Department();
+					subordinate.setTitle(subordinateJson.get("name").asText());
+
 					organizationsJson.get("result").forEach(organizationJson -> {
-						if (organizationJson.get("title").asText().equals(subordinate)) {
-							newDepartments
-									.add(new Department(subordinate, organizationJson.get("package_count").asInt()));
+						if (StringUtils.equals(organizationJson.get("title").asText(), subordinate.getTitle())) {
+							subordinate.setDatasetCount(organizationJson.get("package_count").asInt());
+							department.getSubordinates().add(subordinate);
 						}
 					});
 
 				});
 			}
+			matchingDepartments.add(department);
 		});
 
-		return newDepartments;
+		return matchingDepartments;
 	}
 
 }

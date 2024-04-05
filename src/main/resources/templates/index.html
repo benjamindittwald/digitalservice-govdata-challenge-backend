@@ -2,26 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>GovData Dashboard Challenge - backend</title>
+<title>Dashboard | GovData Dashboard Challenge - backend</title>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body>
-	<h1>GovData Dashboard Challenge - backend</h1>
+	<div class="container">
 
-	<table>
+		<div class="row mt-5 text-center">
+			<div class="col">
+				<h1>GovData Dashboard Challenge - backend</h1>
+			</div>
+		</div>
 
-		<thead>
-			<tr>
-				<th># Datasets</th>
-				<th>Department</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="department: ${departments}">
-				<td th:text="${department.datasetCount}" />
-				<td th:text="${department.title}" />
-			</tr>
-		</tbody>
-	</table>
 
+		<div class="row justify-content-md-center mt-2">
+
+			<div class="col col-lg-7">
+				<table class="table">
+					<caption>Source: https://www.govdata.de</caption>
+					<thead>
+						<tr>
+							<th class="text-end" scope="col"># Datasets</th>
+							<th scope="col">Department</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="fm: ${federalMinistries}">
+							<td class="text-end" scope="row" th:text="${fm.datasetCount}" />
+							<td th:text="${fm.title}" />
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
