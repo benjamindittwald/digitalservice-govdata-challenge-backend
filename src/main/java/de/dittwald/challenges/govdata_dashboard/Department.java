@@ -1,6 +1,6 @@
 package de.dittwald.challenges.govdata_dashboard;
 
-public class Department {
+public class Department implements Comparable<Department> {
 
 	public Department(String title, int datasetCount) {
 		super();
@@ -25,6 +25,19 @@ public class Department {
 
 	public void setDatasetCount(int datasetCount) {
 		this.datasetCount = datasetCount;
+	}
+
+	@Override
+	public int compareTo(Department o) {
+
+		if (this.datasetCount == o.datasetCount) {
+			return 0;
+		} else if (this.datasetCount > o.getDatasetCount()) {
+			return 1;
+		} else {
+			return -1;
+		}
+
 	}
 
 }

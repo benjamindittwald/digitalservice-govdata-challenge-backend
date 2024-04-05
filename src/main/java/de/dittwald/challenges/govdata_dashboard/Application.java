@@ -3,15 +3,16 @@ package de.dittwald.challenges.govdata_dashboard;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @SpringBootApplication
-@RestController
+@Controller
 public class Application {
 
 	@Value("classpath:departments.json")
@@ -34,9 +35,14 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@GetMapping("organizations")
-	public ResponseEntity<List<Department>> ckanOrganizationsList() throws IOException {
-		return ResponseEntity.ok(ckanOrganizationsDatasetCountList());
+	@GetMapping("/")
+	public String index(Model model) throws IOException {
+
+		List<Department> departments = ckanOrganizationsDatasetCountList();
+		Collections.sort(departments, Collections.reverseOrder());
+		model.addAttribute("departments", departments);
+
+		return "index";
 	}
 
 	private List<Department> ckanOrganizationsDatasetCountList() throws IOException {

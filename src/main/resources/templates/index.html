@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>GovData Dashboard Challenge - backend</title>
+</head>
+<body>
+	<h1>GovData Dashboard Challenge - backend</h1>
+
+	<table>
+
+		<thead>
+			<tr>
+				<th># Datasets</th>
+				<th>Department</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="department: ${departments}">
+				<td th:text="${department.datasetCount}" />
+				<td th:text="${department.title}" />
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
