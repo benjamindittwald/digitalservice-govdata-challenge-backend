@@ -1,9 +1,12 @@
-package de.dittwald.challenges.govdata_dashboard;
+package de.dittwald.challenges.govdatadashboard.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * Representation of the properties file.
+ */
 @Configuration
 @PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 public class Properties {

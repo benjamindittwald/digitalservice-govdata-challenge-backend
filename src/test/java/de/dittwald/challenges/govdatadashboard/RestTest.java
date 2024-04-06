@@ -1,15 +1,12 @@
-package de.dittwald.challenges.govdata_dashboard;
+package de.dittwald.challenges.govdatadashboard;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
+import de.dittwald.challenges.govdatadashboard.Application;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RestTest {

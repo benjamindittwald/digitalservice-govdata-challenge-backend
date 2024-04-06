@@ -1,8 +1,11 @@
-package de.dittwald.challenges.govdata_dashboard;
+package de.dittwald.challenges.govdatadashboard.department;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representation of a department.
+ */
 public class Department implements Comparable<Department> {
 
 	public Department() {

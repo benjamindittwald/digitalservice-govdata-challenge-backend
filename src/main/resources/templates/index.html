@@ -10,26 +10,55 @@
 
 		<div class="row mt-5 text-center">
 			<div class="col">
-				<h1>GovData Dashboard Challenge - backend</h1>
+				<h1>GovData Dashboard Challenge Dittwald - backend</h1>
 			</div>
 		</div>
 
+		<div class="row justify-content-md-center mt-5">
 
-		<div class="row justify-content-md-center mt-2">
+			<div class="col col-lg-6">
+				<h2>Federal ministries</h2>
 
-			<div class="col col-lg-7">
+				<p>The table below displays the number of datasets published by
+					each federal ministry. This count includes not only datasets
+					directly published by the ministries themselves, but also those
+					published by their respective subordinate entities.</p>
+
 				<table class="table">
-					<caption>Source: https://www.govdata.de</caption>
 					<thead>
 						<tr>
-							<th class="text-end" scope="col"># Datasets</th>
-							<th scope="col">Department</th>
+							<th class="text-end" scope="col">Datasets</th>
+							<th scope="col">Departments</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="fm: ${federalMinistries}">
-							<td class="text-end" scope="row" th:text="${fm.datasetCount}" />
-							<td th:text="${fm.title}" />
+						<tr th:each="rd: ${departments}">
+							<td class="text-end" scope="row" th:text="${rd.datasetCount}" />
+							<td th:text="${rd.title}" />
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col col-lg-6">
+				<h2>Federal ministries and subordinates</h2>
+
+				<p>The table below ranks each federal ministry and its
+					associated subordinate entities based on the number of datasets
+					they have directly published. These are presented in a flattened
+					format.</p>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="text-end" scope="col">Datasets</th>
+							<th scope="col">Departments</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="fd: ${flattenedDepartments}">
+							<td class="text-end" scope="row" th:text="${fd.datasetCount}" />
+							<td th:text="${fd.title}" />
 						</tr>
 					</tbody>
 				</table>
