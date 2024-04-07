@@ -20,6 +20,9 @@ public class Properties {
 	@Value("${govdata.api.organizationList}")
 	private String govdataApiOrganizationsList;
 
+	@Value("${govdata.api.timeout}")
+	private int govdataApiTiemout;
+
 	public int getServerPort() {
 		return serverPort;
 	}
@@ -42,5 +45,13 @@ public class Properties {
 
 	public void setGovdataApiOrganizationsList(String govdataApiOrganizationsList) {
 		this.govdataApiOrganizationsList = govdataApiOrganizationsList;
+	}
+
+	public int getGovdataApiTiemout() {
+		return govdataApiTiemout;
+	}
+
+	public void setGovdataApiTiemout(int govdataApiTiemout) {
+		this.govdataApiTiemout = govdataApiTiemout;
 	}
 }

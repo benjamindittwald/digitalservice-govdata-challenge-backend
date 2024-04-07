@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import de.dittwald.challenges.govdatadashboard.department.Department;
 import de.dittwald.challenges.govdatadashboard.department.DepartmentsJsonClient;
-import de.dittwald.challenges.govdatadashboard.department.GovDataCkanClient;
 import de.dittwald.challenges.govdatadashboard.department.OrganizationsFilter;
+import de.dittwald.challenges.govdatadashboard.govdata.GovDataCkanClient;
 
 /**
  * Routing and messages for index.html
