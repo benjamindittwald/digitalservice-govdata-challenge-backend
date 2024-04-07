@@ -5,13 +5,13 @@ stages:
 
 test app:
   stage: test
-  image: maven:eclipse-temurin-21-jdk-alpine
+  image: maven:3-eclipse-temurin-21-alpine
   script:
     - mvn test
 
 build app:
   stage: build
-  image: maven:eclipse-temurin-21-jdk-alpine
+  image: maven:3-eclipse-temurin-21-alpine
   script:
     - mvn package -DskipTests
   artifacts:
