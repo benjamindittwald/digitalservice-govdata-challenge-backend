@@ -1,0 +1,29 @@
+stages:
+  - test
+  - build
+  - register
+
+test app:
+  stage: test
+  image: maven:eclipse-temurin-21-jdk-alpine
+  script:
+    - mvn test
+
+build app:
+  stage: build
+  image: maven:eclipse-temurin-21-jdk-alpine
+  script:
+    - mvn package -DskipTests
+  artifacts:
+    paths:
+      - target
+      
+register:
+  stage: register
+  tags:
+    - dind
+  image: docker:latest
+  script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE":latest .
+    - docker push "$CI_REGISTRY_IMAGE":latest
