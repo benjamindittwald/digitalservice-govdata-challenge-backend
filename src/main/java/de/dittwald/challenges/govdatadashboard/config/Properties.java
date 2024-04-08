@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import lombok.Getter;
+
 /**
  * Representation of the properties file.
  */
 @Configuration
 @PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
+@Getter
 public class Properties {
 
 	@Value("${server.port}")
@@ -21,37 +24,5 @@ public class Properties {
 	private String govdataApiOrganizationsList;
 
 	@Value("${govdata.api.timeout}")
-	private int govdataApiTiemout;
-
-	public int getServerPort() {
-		return serverPort;
-	}
-
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
-	}
-
-	public String getGovdataApiBaseUrl() {
-		return govdataApiBaseUrl;
-	}
-
-	public void setGovdataApiBaseUrl(String govdataApiBaseUrl) {
-		this.govdataApiBaseUrl = govdataApiBaseUrl;
-	}
-
-	public String getGovdataApiOrganizationsList() {
-		return govdataApiOrganizationsList;
-	}
-
-	public void setGovdataApiOrganizationsList(String govdataApiOrganizationsList) {
-		this.govdataApiOrganizationsList = govdataApiOrganizationsList;
-	}
-
-	public int getGovdataApiTiemout() {
-		return govdataApiTiemout;
-	}
-
-	public void setGovdataApiTiemout(int govdataApiTiemout) {
-		this.govdataApiTiemout = govdataApiTiemout;
-	}
+	private int govdataApiTimeout;
 }

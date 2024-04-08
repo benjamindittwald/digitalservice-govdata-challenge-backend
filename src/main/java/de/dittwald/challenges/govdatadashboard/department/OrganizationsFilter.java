@@ -1,6 +1,7 @@
 package de.dittwald.challenges.govdatadashboard.department;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Filters CKANSs organizations with departments.json
+ * Filters CKANs organizations with departments.json
  */
 @Controller
 @Slf4j
@@ -34,12 +35,12 @@ public class OrganizationsFilter {
 	public Set<Department> filterOrganizationsByDepartments(JsonNode departments, JsonNode organizations)
 			throws IOException {
 
-		Set<Department> matchingDepartments = new HashSet<Department>();
+		Set<Department> filteredDepartments = new HashSet<Department>();
 		JsonNode organizationsNode = organizations;
 
 		departments.get("departments").forEach(departmentJson -> {
 
-			Department department = new Department();
+			Department department = Department.builder().subordinates(new ArrayList<Department>()).build();
 			department.setTitle(departmentJson.get("name").asText());
 
 			organizationsNode.get("result").forEach(organizationJson -> {
@@ -51,7 +52,7 @@ public class OrganizationsFilter {
 			if (departmentJson.has("subordinates")) {
 				departmentJson.get("subordinates").forEach(subordinateJson -> {
 
-					Department subordinate = new Department();
+					Department subordinate = Department.builder().subordinates(new ArrayList<Department>()).build();
 					subordinate.setTitle(subordinateJson.get("name").asText());
 
 					organizationsNode.get("result").forEach(organizationJson -> {
@@ -66,12 +67,12 @@ public class OrganizationsFilter {
 
 				});
 			}
-			matchingDepartments.add(department);
+			filteredDepartments.add(department);
 			log.debug("Added department \"{}\" including its subordinates with count of {} direct published datasets",
 					department.getTitle(), department.getDatasetCount());
 		});
 
-		return matchingDepartments;
+		return filteredDepartments;
 	}
 
 }

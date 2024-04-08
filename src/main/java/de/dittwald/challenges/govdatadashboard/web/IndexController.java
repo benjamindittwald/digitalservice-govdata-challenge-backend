@@ -77,14 +77,16 @@ public class IndexController {
 
 		departments.forEach(department -> {
 
-			Department preparedDepartment = new Department(department.getTitle(), department.getDatasetCount());
+			Department preparedDepartment = Department.builder().datasetCount(department.getDatasetCount())
+					.title(department.getTitle()).subordinates(new ArrayList<Department>()).build();
 
 			if (!department.getSubordinates().isEmpty()) {
 				department.getSubordinates().forEach(subordinate -> {
 					if (flattened) {
 						preparedDepartments.add(subordinate);
 					} else {
-						preparedDepartment.setDatasetCount(preparedDepartment.getDatasetCount() + subordinate.getDatasetCount());
+						preparedDepartment
+								.setDatasetCount(preparedDepartment.getDatasetCount() + subordinate.getDatasetCount());
 					}
 				});
 			}

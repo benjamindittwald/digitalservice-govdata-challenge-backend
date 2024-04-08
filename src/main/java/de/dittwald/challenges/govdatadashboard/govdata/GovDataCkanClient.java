@@ -40,12 +40,12 @@ public class GovDataCkanClient {
 		ObjectMapper organizationsMapper = new ObjectMapper();
 
 		HttpClient httpClient = HttpClient.create()
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.properties.getGovdataApiTiemout())
-				.responseTimeout(Duration.ofMillis(this.properties.getGovdataApiTiemout()))
+				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.properties.getGovdataApiTimeout())
+				.responseTimeout(Duration.ofMillis(this.properties.getGovdataApiTimeout()))
 				.doOnConnected(connection -> connection
 						.addHandlerLast(
-								new ReadTimeoutHandler(this.properties.getGovdataApiTiemout(), TimeUnit.MILLISECONDS))
-						.addHandlerLast(new WriteTimeoutHandler(this.properties.getGovdataApiTiemout(),
+								new ReadTimeoutHandler(this.properties.getGovdataApiTimeout(), TimeUnit.MILLISECONDS))
+						.addHandlerLast(new WriteTimeoutHandler(this.properties.getGovdataApiTimeout(),
 								TimeUnit.MILLISECONDS)));
 
 		WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
