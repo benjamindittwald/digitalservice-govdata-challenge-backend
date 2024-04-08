@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import de.dittwald.challenges.govdatadashboard.department.Department;
-import de.dittwald.challenges.govdatadashboard.department.DepartmentsJsonClient;
+import de.dittwald.challenges.govdatadashboard.department.DepartmentsJsonResourceLoader;
 import de.dittwald.challenges.govdatadashboard.department.OrganizationsFilter;
 import de.dittwald.challenges.govdatadashboard.govdata.GovDataCkanClient;
 
@@ -26,7 +26,7 @@ public class IndexController {
 	private OrganizationsFilter organizationsFilter;
 
 	@Autowired
-	private DepartmentsJsonClient departmentsJsonClient;
+	private DepartmentsJsonResourceLoader departmentsJsonClient;
 
 	@Autowired
 	private GovDataCkanClient govDataCkanClient;

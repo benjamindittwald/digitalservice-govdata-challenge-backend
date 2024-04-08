@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * A client to read the departments.json from classpath.
  */
 @Controller
-public class DepartmentsJsonClient {
+public class DepartmentsJsonResourceLoader {
 
 	@Value("classpath:departments.json")
 	private Resource departments;
