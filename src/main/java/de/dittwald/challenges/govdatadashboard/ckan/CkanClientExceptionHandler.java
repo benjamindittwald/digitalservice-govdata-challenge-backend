@@ -1,4 +1,4 @@
-package de.dittwald.challenges.govdatadashboard.govdata;
+package de.dittwald.challenges.govdatadashboard.ckan;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,7 +12,7 @@ import io.netty.handler.timeout.WriteTimeoutException;
  * Handles the GovDataCkanClient exceptions
  */
 @ControllerAdvice
-public class GovDataClientExceptionHandler {
+public class CkanClientExceptionHandler {
 
 	@ExceptionHandler(ConnectTimeoutException.class)
 	public String govdataConnectTimeoutException(ConnectTimeoutException e) {

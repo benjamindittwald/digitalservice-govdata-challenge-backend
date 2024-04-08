@@ -1,4 +1,4 @@
-package de.dittwald.challenges.govdatadashboard.govdata;
+package de.dittwald.challenges.govdatadashboard.ckan;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +23,7 @@ import reactor.netty.http.client.HttpClient;
  * A client to use GovData CKANs action API.
  */
 @Controller
-public class GovDataCkanClient {
+public class CkanClient {
 
 	@Autowired
 	private Properties properties;
