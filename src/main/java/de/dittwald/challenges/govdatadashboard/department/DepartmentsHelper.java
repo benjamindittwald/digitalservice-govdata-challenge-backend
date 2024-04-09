@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -15,9 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Filters CKANs organizations with departments.json
  */
-@Controller
 @Slf4j
-public class OrganizationsFilter {
+public class DepartmentsHelper {
 
 	/**
 	 * Iterates over all departments and its subordinates of the departments.json
@@ -32,7 +30,7 @@ public class OrganizationsFilter {
 	 *         departments.json
 	 * @throws IOException
 	 */
-	public Set<Department> filterOrganizationsByDepartments(JsonNode departments, JsonNode organizations)
+	public static Set<Department> filterOrganizationsByDepartments(JsonNode departments, JsonNode organizations)
 			throws IOException {
 
 		Set<Department> filteredDepartments = new HashSet<Department>();

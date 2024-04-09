@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
@@ -21,16 +20,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.dittwald.challenges.govdatadashboard.util.JsonResourceLoader;
 
 @SpringBootTest
-public class OrganizationsFilterTest {
+public class DepartmentsHelperTest {
 
 	@Value("classpath:departments.json")
 	private Resource departmentsResource;
 
 	@Value("classpath:organizations.json")
 	private Resource organizationsResource;
-
-	@Autowired
-	private OrganizationsFilter organizationsFilter;
 
 	private JsonNode departmentsJson;
 	private JsonNode organizationsJson;
@@ -47,14 +43,14 @@ public class OrganizationsFilterTest {
 
 	@Test
 	public void testFilterResultCount() throws IOException {
-		assertEquals(DEPARTMEMTS_COUNT, this.organizationsFilter
+		assertEquals(DEPARTMEMTS_COUNT, DepartmentsHelper
 				.filterOrganizationsByDepartments(this.departmentsJson, this.organizationsJson).size());
 	}
 
 	@Test
 	public void testIfBerlinOnlineIsNotIncludedThenOk() throws IOException {
 
-		this.organizationsFilter.filterOrganizationsByDepartments(this.departmentsJson, this.organizationsJson)
+		DepartmentsHelper.filterOrganizationsByDepartments(this.departmentsJson, this.organizationsJson)
 				.forEach(department -> {
 					if (StringUtils.equals(department.getTitle(), CKAN_ORGANIZATION_BERLIN_ONLINE)) {
 						fail("Berlin Online is not part of departments.json");
@@ -70,7 +66,7 @@ public class OrganizationsFilterTest {
 		List<String> organizationTitles = new ArrayList<String>(Arrays.asList("Auswärtiges Amt",
 				"Bundesministerium der Finanzen", "Bundeszentralamt für Steuern", "Generalzolldirektion", "ITZ-Bund"));
 
-		for (Department department : this.organizationsFilter.filterOrganizationsByDepartments(this.departmentsJson,
+		for (Department department : DepartmentsHelper.filterOrganizationsByDepartments(this.departmentsJson,
 				this.organizationsJson)) {
 			if (organizationTitles.contains(department.getTitle())) {
 				storedOrganizationsCount++;

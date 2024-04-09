@@ -13,9 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import de.dittwald.challenges.govdatadashboard.ckan.CkanClient;
+import de.dittwald.challenges.govdatadashboard.config.Properties;
 import de.dittwald.challenges.govdatadashboard.department.Department;
-import de.dittwald.challenges.govdatadashboard.department.OrganizationsFilter;
-import de.dittwald.challenges.govdatadashboard.util.IndexControllerUtil;
+import de.dittwald.challenges.govdatadashboard.department.DepartmentsHelper;
 import de.dittwald.challenges.govdatadashboard.util.JsonResourceLoader;
 
 /**
@@ -28,26 +28,26 @@ public class IndexController {
 	private Resource departments;
 
 	@Autowired
-	private OrganizationsFilter organizationsFilter;
-
-	@Autowired
-	private CkanClient govDataCkanClient;
+	private Properties properties;
 
 	private final static boolean FLATTENED = true;
 	private final static boolean NON_FLATTENED = false;
 
 	@GetMapping("/")
 	public String index(Model model) throws IOException {
+		CkanClient ckanClient = CkanClient.builder().timeout(this.properties.getGovdataApiTimeout())
+				.baseUrl(this.properties.getGovdataApiBaseUrl())
+				.urlPath(this.properties.getGovdataApiOrganizationsList()).build();
 
-		Set<Department> departmentsSet = this.organizationsFilter.filterOrganizationsByDepartments(
-				JsonResourceLoader.getAsJson(departments), this.govDataCkanClient.getOrganizationsList());
+		Set<Department> departmentsSet = DepartmentsHelper.filterOrganizationsByDepartments(
+				JsonResourceLoader.getAsJson(departments), ckanClient.getOrganizationsList());
 
-		List<Department> departments = IndexControllerUtil.prepareDepartmentsForView(departmentsSet, NON_FLATTENED);
+		List<Department> departments = IndexControllerHelper.prepareDepartmentsForView(departmentsSet, NON_FLATTENED);
 		Collections.sort(departments);
 		Collections.reverse(departments);
 		model.addAttribute("departments", departments);
 
-		List<Department> flattenedDepartments = IndexControllerUtil.prepareDepartmentsForView(departmentsSet,
+		List<Department> flattenedDepartments = IndexControllerHelper.prepareDepartmentsForView(departmentsSet,
 				FLATTENED);
 		Collections.sort(flattenedDepartments);
 		Collections.reverse(flattenedDepartments);

@@ -10,13 +10,13 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 
 import de.dittwald.challenges.govdatadashboard.department.Department;
-import de.dittwald.challenges.govdatadashboard.department.OrganizationsFilter;
+import de.dittwald.challenges.govdatadashboard.department.DepartmentsHelper;
+import de.dittwald.challenges.govdatadashboard.web.IndexControllerHelper;
 
 @SpringBootTest
 public class IndexControllerUtilTest {
@@ -26,9 +26,6 @@ public class IndexControllerUtilTest {
 
 	@Value("classpath:organizations.json")
 	private Resource organizationsResource;
-
-	@Autowired
-	private OrganizationsFilter organizationsFilter;
 
 	private Set<Department> departmentsSet;
 
@@ -41,10 +38,10 @@ public class IndexControllerUtilTest {
 
 	@BeforeEach
 	public void setUp() throws IOException {
-		departmentsSet = this.organizationsFilter.filterOrganizationsByDepartments(
+		departmentsSet = DepartmentsHelper.filterOrganizationsByDepartments(
 				JsonResourceLoader.getAsJson(departmentsResource), JsonResourceLoader.getAsJson(organizationsResource));
-		departmentsNonFlattened = IndexControllerUtil.prepareDepartmentsForView(departmentsSet, false);
-		departmentsFlattened = IndexControllerUtil.prepareDepartmentsForView(departmentsSet, true);
+		departmentsNonFlattened = IndexControllerHelper.prepareDepartmentsForView(departmentsSet, false);
+		departmentsFlattened = IndexControllerHelper.prepareDepartmentsForView(departmentsSet, true);
 	}
 
 	@Test

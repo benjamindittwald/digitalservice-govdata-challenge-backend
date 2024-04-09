@@ -3,9 +3,7 @@ package de.dittwald.challenges.govdatadashboard.ckan;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,20 +11,21 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.dittwald.challenges.govdatadashboard.config.Properties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import lombok.Builder;
 import reactor.netty.http.client.HttpClient;
 
 /**
  * A client to use GovData CKANs action API.
  */
-@Controller
+@Builder
 public class CkanClient {
 
-	@Autowired
-	private Properties properties;
+	private int timeout;
+	private String baseUrl;
+	private String urlPath;
 
 	/**
 	 * Requests all organizations from GovData CKANs action API. Includes all fields
@@ -39,19 +38,15 @@ public class CkanClient {
 	public JsonNode getOrganizationsList() throws JsonMappingException, JsonProcessingException {
 		ObjectMapper organizationsMapper = new ObjectMapper();
 
-		HttpClient httpClient = HttpClient.create()
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.properties.getGovdataApiTimeout())
-				.responseTimeout(Duration.ofMillis(this.properties.getGovdataApiTimeout()))
+		HttpClient httpClient = HttpClient.create().option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.timeout)
+				.responseTimeout(Duration.ofMillis(this.timeout))
 				.doOnConnected(connection -> connection
-						.addHandlerLast(
-								new ReadTimeoutHandler(this.properties.getGovdataApiTimeout(), TimeUnit.MILLISECONDS))
-						.addHandlerLast(new WriteTimeoutHandler(this.properties.getGovdataApiTimeout(),
-								TimeUnit.MILLISECONDS)));
+						.addHandlerLast(new ReadTimeoutHandler(this.timeout, TimeUnit.MILLISECONDS))
+						.addHandlerLast(new WriteTimeoutHandler(this.timeout, TimeUnit.MILLISECONDS)));
 
 		WebClient client = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient))
-				.baseUrl(this.properties.getGovdataApiBaseUrl()).build();
+				.baseUrl(this.baseUrl).build();
 
-		return organizationsMapper.readTree(client.get().uri(properties.getGovdataApiOrganizationsList()).retrieve()
-				.bodyToMono(String.class).block());
+		return organizationsMapper.readTree(client.get().uri(this.urlPath).retrieve().bodyToMono(String.class).block());
 	}
 }

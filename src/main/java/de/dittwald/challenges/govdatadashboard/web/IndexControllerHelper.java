@@ -1,4 +1,4 @@
-package de.dittwald.challenges.govdatadashboard.util;
+package de.dittwald.challenges.govdatadashboard.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import de.dittwald.challenges.govdatadashboard.department.Department;
 
-public class IndexControllerUtil {
+public class IndexControllerHelper {
 
 	/**
 	 * 
