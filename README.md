@@ -1,6 +1,6 @@
 # GovData Dashboard Challenge - Backend
 
-This application serves a solution for the [DigitalService GovData Dashboard backend-challenge](https://github.com/digitalservicebund/backend-challenge).
+This application serves as a solution for the [DigitalService GovData Dashboard backend-challenge](https://github.com/digitalservicebund/backend-challenge).
 
 A small web application that provides a dashboard showing how many data sets each federal ministry has made available on GovData. States, municipalities and other institutions are ignored.
 
