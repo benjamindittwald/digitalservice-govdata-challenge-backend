@@ -1,5 +1,7 @@
 # GovData Dashboard Challenge - Backend
 
+This application serves a solution for the [DigitalService GovData Dashboard backend-challenge](https://github.com/digitalservicebund/backend-challenge).
+
 A small web application that provides a dashboard showing how many data sets each federal ministry has made available on GovData. States, municipalities and other institutions are ignored.
 
 ![A screenshot of the dashboard](assets/img/dashboard_screenshot.png)
@@ -7,11 +9,11 @@ A small web application that provides a dashboard showing how many data sets eac
 
 # Run with Docker
 
-A Docker image with the dashboard application is registered at gitlab.com. This section describes how to pull and run it via Docker.
+A Docker image of the dashboard application is hosted on gitlab.com. This section will guide you on how to pull and execute it using Docker.
 
 ## Prerequisites
 
-Install Docker 25.0.3. Other versions might work as well, but were not tested.
+You're required to install Docker version 25.0.3. While other versions might also operate, they haven't been rigorously tested.
 
 ## Pull and run
 
@@ -29,7 +31,7 @@ docker run -p 8080:8080 registry.gitlab.com/benjamin.dittwald/digitalservice-gov
 
 ## Test it
 
-Browse the application at [http://localhost:8080/](http://localhost:8080/).
+You can access the application by visiting [http://localhost:8080/](http://localhost:8080/).
 
 # Build and run with Maven
 
@@ -37,10 +39,12 @@ This section describes how to build and run the dashboard application with Maven
 
 ## Prerequisites
 
+You're required to install the following software:
+
 - Install Maven 3.9.6
 - Install OpenJDK 21.0.2
 
-Other versions might work as well, but were not tested.
+While other versions might also operate, they haven't been rigorously tested.
 
 ## Build
 
@@ -60,4 +64,4 @@ mvn spring-boot:run
 
 ## Test it
 
-Browse the application at [http://localhost:8080/](http://localhost:8080/).
+You can access the application by visiting [http://localhost:8080/](http://localhost:8080/).
